@@ -207,5 +207,5 @@ REST_FRAMEWORK = {
     'EXCEPTION_HANDLER': 'meiduo_mall.utils.exceptions.exception_handler',
 }
 
-# 修改Django认证系统的模型类
+# 修改Django认证系统的模型类，只能写'应用.模型名'
 AUTH_USER_MODEL = 'users.User'
