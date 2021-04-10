@@ -63,6 +63,7 @@ class CreateUserSerializer(serializers.ModelSerializer):
         # redis取出的数据都是bytes类型,先判断是否是None，不然不能调用decode方法
         if real_sms_code is None or attrs['sms_code'] != real_sms_code.decode():
             raise serializers.ValidationError('验证码错误')
+
         return attrs
 
     def create(self, validate_data):
@@ -74,5 +75,7 @@ class CreateUserSerializer(serializers.ModelSerializer):
         password = validate_data.pop('password')  # 删除明文密码
         user = User(**validate_data)
         user.set_password(password)  # 把密码加密后再赋值给user的password属性
-
         user.save()
+
+        return user
+
