@@ -5,9 +5,8 @@ from django_redis import get_redis_connection
 from rest_framework.response import Response
 from rest_framework import status
 
-# 从位于sys.path列表中的路径，直接导入即可
-from meiduo_mall.libs.yuntongxun.sms import CCP
 from . import constants
+from celery_tasks.sms.tasks import send_sms_code
 
 logger = logging.getLogger('django')
 
@@ -38,7 +37,9 @@ class SMSCodeView(APIView):
 
         # 3.调用第三方sdk发送短信
         # CCP().send_template_sms(self, 手机号, [验证码， 过期时间], 模板id)
-        CCP().send_template_sms(mobile, [sms_code, constants.SMS_CODE_REDIS_EXPIRES // 60], 1)  # //表示整除
-        logger.info('发送验证码:{}'.format(sms_code))
+        # CCP().send_template_sms(mobile, [sms_code, constants.SMS_CODE_REDIS_EXPIRES // 60], 1)  # //表示整除
+        send_sms_code.delay(mobile, sms_code)   # 添加异步任务
+        logger.info('添加异步任务，发送验证码:{}'.format(sms_code))
+
         # 4.响应
         return Response({'messsage': 'ok'})
