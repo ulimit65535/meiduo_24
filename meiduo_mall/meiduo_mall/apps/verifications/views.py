@@ -26,13 +26,19 @@ class SMSCodeView(APIView):
 
         # 1.生成随机6位数字，不够补0
         sms_code = '%06d' % randint(0, 999999)
-        # 3.存储验证码到redis,300秒过期
-        redis_conn.setex('sms_%s' % mobile, constants.SMS_CODE_REDIS_EXPIRES, sms_code)
-        # 3.1 存储一个标记，，标识此手机号已发送过短信，有效期60s
-        redis_conn.setex('send_flag_%s' % mobile, constants.SEND_SMS_CODE_INTERVAL, 1)
-        # 4.调用第三方sdk发送短信
+
+        # 2.创建redis管道，减少redis连接操作
+        pl = redis_conn.pipeline()
+        # 2.1 存储验证码到redis,300秒过期
+        pl.setex('sms_%s' % mobile, constants.SMS_CODE_REDIS_EXPIRES, sms_code)
+        # 2.2 存储一个标记，，标识此手机号已发送过短信，有效期60s
+        pl.setex('send_flag_%s' % mobile, constants.SEND_SMS_CODE_INTERVAL, 1)
+        # 2.3 执行管道
+        pl.execute()
+
+        # 3.调用第三方sdk发送短信
         # CCP().send_template_sms(self, 手机号, [验证码， 过期时间], 模板id)
         CCP().send_template_sms(mobile, [sms_code, constants.SMS_CODE_REDIS_EXPIRES // 60], 1)  # //表示整除
         logger.info('发送验证码:{}'.format(sms_code))
-        # 5.响应
+        # 4.响应
         return Response({'messsage': 'ok'})
