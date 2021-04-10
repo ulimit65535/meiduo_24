@@ -2,7 +2,7 @@ import logging
 from rest_framework.views import APIView
 from random import randint
 from django_redis import get_redis_connection
-from rest_framework.response import  Response
+from rest_framework.response import Response
 
 # 从位于sys.path列表中的路径，直接导入即可
 from meiduo_mall.libs.yuntongxun.sms import CCP

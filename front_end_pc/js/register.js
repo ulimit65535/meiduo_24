@@ -1,7 +1,7 @@
 var vm = new Vue({
 	el: '#app',
 	data: {
-	    host: 'http://127.0.0.1:8000',
+        host, // 也可写为:host: host
 		error_name: false,
 		error_password: false,
 		error_check_password: false,

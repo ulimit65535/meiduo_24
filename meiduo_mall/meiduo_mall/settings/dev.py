@@ -28,7 +28,7 @@ SECRET_KEY = 'x=q_*01i1_m4+^&2g=%-o7-hy09_0=(eiqc0mp@r@jmj)94sp5'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -42,11 +42,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'rest_framework',  # DRF
+    'corsheaders',  # django-cors-headers
 
     'users.apps.UsersConfig',  # 用户模块
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  # 最外层的中间件，必须写第一行
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -209,3 +211,11 @@ REST_FRAMEWORK = {
 
 # 修改Django认证系统的模型类，只能写'应用.模型名'
 AUTH_USER_MODEL = 'users.User'
+
+# CORS追加白名单
+CORS_ORIGIN_WHITELIST = (
+    '192.168.1.254:8080',
+    '192.168.1.254:8000',
+    '192.168.1.254:80',
+)
+CORS_ALLOW_CREDENTIALS = True  # 跨域时允许携带cookie
