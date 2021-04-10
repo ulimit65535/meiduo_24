@@ -19,7 +19,7 @@ var vm = new Vue({
 		sms_code_tip: '获取短信验证码',  // a标签文字
 		error_sms_code_message: '',  // 验证码错误提示信息
 		error_name_message: '',
-		error_phone_message: ''
+		error_phone_message: '',
 	},
 	methods: {
 		// 检查用户名
