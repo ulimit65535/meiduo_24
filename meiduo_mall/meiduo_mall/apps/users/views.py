@@ -31,3 +31,20 @@ class UsernameCountView(APIView):
 
         # 响应
         return Response(data)
+
+
+class MobileCountView(APIView):
+    """判断手机号是否已注册"""
+
+    def get(self, request, mobile):
+        # 查询user表
+        count = User.objects.filter(mobile=mobile).count()
+
+        # 包装响应体数据
+        data = {
+            'mobile': mobile,
+            'count': count
+        }
+
+        # 响应
+        return Response(data)
