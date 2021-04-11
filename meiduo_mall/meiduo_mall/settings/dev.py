@@ -213,6 +213,9 @@ REST_FRAMEWORK = {
 # 修改Django认证系统的模型类，只能写'应用.模型名'
 AUTH_USER_MODEL = 'users.User'
 
+# 修改Django用户认证后端类
+AUTHENTICATION_BACKENDS = ['users.utils.UsernameMobileAuthBackend']
+
 # CORS追加白名单
 CORS_ORIGIN_WHITELIST = (
     '192.168.1.254:8080',
