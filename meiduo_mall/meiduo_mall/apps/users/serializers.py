@@ -79,9 +79,9 @@ class CreateUserSerializer(serializers.ModelSerializer):
         user.set_password(password)  # 把密码加密后再赋值给user的password属性
         user.save()
 
+        # 注册后，自动登录，需要生成jwt，响应给前端
         jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
         jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
-
         payload = jwt_payload_handler(user)  # 传入用户模型对象，生成payload部分
         token = jwt_encode_handler(payload)  # 传入截荷，生成完整的jwt
         user.token = token
