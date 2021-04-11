@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os, sys
+import datetime
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -219,3 +220,8 @@ CORS_ORIGIN_WHITELIST = (
     '192.168.1.254:80',
 )
 CORS_ALLOW_CREDENTIALS = True  # 跨域时允许携带cookie
+
+# JWT配置
+JWT_AUTH = {
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=1),  # JWT有效期
+}
