@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'corsheaders',  # django-cors-headers
 
     'users.apps.UsersConfig',  # 用户模块
+    'oauth.apps.OauthConfig',  # 第三方登录模块
 ]
 
 MIDDLEWARE = [
