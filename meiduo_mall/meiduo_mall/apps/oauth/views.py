@@ -7,6 +7,7 @@ from django.conf import settings
 from rest_framework_jwt.settings import api_settings
 
 from .models import OauthQQUser
+from .serializers import OauthQQUserSerializer
 from .utils import generate_save_user_token
 
 logger = logging.getLogger('django')
@@ -69,3 +70,23 @@ class OauthQQUserView(APIView):
                 'username': user.username,
                 'user_id': user.id
             })
+
+    def post(self, request):
+        """openid绑定用户接口"""
+        # 创建序列化器进行反序列化
+        serializer = OauthQQUserSerializer(data=request.data)
+        # 调用is_valid方法进行校验
+        serializer.is_valid(raise_exception=True)
+        # 调用序列化器save方法，返回值是序列化器create/update方法的返回值
+        user = serializer.save()
+        # 生成jwt保存会话状态
+        jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
+        jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
+        payload = jwt_payload_handler(user)  # 传入用户模型对象，生成payload部分
+        token = jwt_encode_handler(payload)  # 传入截荷，生成完整的jwt
+        # 响应
+        return Response({
+            'token': token,
+            'username': user.username,
+            'user_id': user.id
+        })
