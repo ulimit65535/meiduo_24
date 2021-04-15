@@ -79,6 +79,8 @@ class EmailVerifyView(APIView):
     def get(self, request):
         # 获取前端传入的token
         token = request.query_params.get('token')
+        if not token:
+            return Response({'message': '缺少token'},status=status.HTTP_400_BAD_REQUEST)
         # token解密，并查询对应的user
         user = User.check_verify_email_token(token)
         # 修改当前user的email_active为true
