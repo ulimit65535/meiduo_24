@@ -220,11 +220,12 @@ AUTH_USER_MODEL = 'users.User'
 # 修改Django用户认证后端类
 AUTHENTICATION_BACKENDS = ['users.utils.UsernameMobileAuthBackend']
 
+# 前端域名
+FRONT_END = '192.168.1.254:8080'
+
 # CORS追加白名单
 CORS_ORIGIN_WHITELIST = (
-    '192.168.1.254:8080',
-    '192.168.1.254:8000',
-    '192.168.1.254:80',
+    FRONT_END,
 )
 CORS_ALLOW_CREDENTIALS = True  # 跨域时允许携带cookie
 
@@ -238,3 +239,11 @@ JWT_AUTH = {
 QQ_CLIENT_ID = '101514053'
 QQ_CLIENT_SECRET = '1075e75648566262ea35afa688073012'
 QQ_REDIRECT_URI = 'http://192.168.1.254:8080/oauth_callback.html'
+
+# SMTP配置
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.163.com'
+EMAIL_PORT = 25
+EMAIL_HOST_USER = 'itcast99@163.com'    # 发送邮件的邮箱
+EMAIL_HOST_PASSWORD = 'python99'    # 在邮箱中设置的客户端授权密码
+EMAIL_FROM = 'python<itcast99@163.com>' # 收件人看到的发件人

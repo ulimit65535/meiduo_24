@@ -13,7 +13,7 @@ def generate_save_user_token(openid):
 
     # 2.调用dumps(json字典)方法进行加密
     data = {'openid': openid}
-    token = serializer.dump(data)
+    token = serializer.dumps(data)
 
     # 3.把加密后的openid返回,加密后的数据默认为bytes类型，调用decode转换为字符串
     return token.decode()

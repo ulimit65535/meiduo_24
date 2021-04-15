@@ -4,6 +4,7 @@ from django_redis import get_redis_connection
 from rest_framework_jwt.settings import api_settings
 
 from .models import User
+from celery_tasks.email.tasks import send_verify_email
 
 
 class CreateUserSerializer(serializers.ModelSerializer):
@@ -109,7 +110,12 @@ class EmailSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         """重写update方法，借用此时机发激活邮件"""
-        # 发送邮件验证邮箱
 
         # 后续逻辑调用父类update方法
-        super(EmailSerializer, self).update(instance, validated_data)
+        instance = super(EmailSerializer, self).update(instance, validated_data)
+
+        # 发送邮件验证邮箱
+        verify_url = instance.generate_email_verify_url()
+        send_verify_email.delay(instance.email, verify_url)  # 添加异步任务
+
+        return instance
