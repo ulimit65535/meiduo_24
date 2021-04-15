@@ -1,9 +1,10 @@
 from django.shortcuts import render
-from rest_framework.generics import CreateAPIView
+from rest_framework.generics import CreateAPIView, RetrieveAPIView
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 
-from .serializers import CreateUserSerializer
+from .serializers import CreateUserSerializer, UserDetailSerializer
 from .models import User
 
 
@@ -48,3 +49,14 @@ class MobileCountView(APIView):
 
         # 响应
         return Response(data)
+
+
+class UserDetailView(RetrieveAPIView):
+    """用户详细信息展示"""
+    serializer_class = UserDetailSerializer
+    # queryset = User.objects.all() # 重写了父亲的get_object方法，不再需要queryset
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        """重写父类GenericAPIView的get_object方法，返回要展示的用户模型对象"""
+        return self.request.user
