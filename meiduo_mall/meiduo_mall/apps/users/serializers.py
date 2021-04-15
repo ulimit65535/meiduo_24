@@ -94,3 +94,22 @@ class UserDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'mobile', 'email', 'email_active']
+
+
+class EmailSerializer(serializers.ModelSerializer):
+    """更新邮箱序列化器"""
+    class Meta:
+        model = User
+        fields = ['id', 'email']
+        extra_kwargs = {
+            'email': {
+                'required': True  # 重写User的email属性，反序列化校验时，必须有该字段
+            }
+        }
+
+    def update(self, instance, validated_data):
+        """重写update方法，借用此时机发激活邮件"""
+        # 发送邮件验证邮箱
+
+        # 后续逻辑调用父类update方法
+        super(EmailSerializer, self).update(instance, validated_data)
