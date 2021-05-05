@@ -22,4 +22,5 @@ urlpatterns = [
     url(r'^oauth/', include('oauth.urls')),  # 第三方登录
     url(r'^', include('verifications.urls')),  # 短信验证码模块
     url(r'^', include('users.urls')),  # 用户模块
+    url(r'^', include('areas.urls')),  # 省市区模块
 ]

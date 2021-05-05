@@ -46,6 +46,7 @@ INSTALLED_APPS = [
 
     'users.apps.UsersConfig',  # 用户模块
     'oauth.apps.OauthConfig',  # 第三方登录模块
+    'areas.apps.AreasConfig',  # 省市区模块
 ]
 
 MIDDLEWARE = [
@@ -88,7 +89,7 @@ DATABASES = {
         'NAME': 'meiduo_24',
         'USER': 'meiduo',
         'PASSWORD': 'meiduo',
-        'HOST': '10.254.254.3',
+        'HOST': '127.0.0.1',
         'PORT': '3306',
         # 'OPTIONS': {
         #     "init_command": "SET sql_mode='STRICT_TRANS_TABLES'",
