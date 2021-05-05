@@ -4,7 +4,7 @@
 CELERY_CREATE_MISSING_QUEUES = True
 
 # 指定任务队列的地址
-BROKER_URL = 'redis://192.168.1.254:6379/7'
+BROKER_URL = 'redis://10.254.254.3:6379/7'
 
 # 并发workers数
 CELERYD_CONCURRENCY = 1

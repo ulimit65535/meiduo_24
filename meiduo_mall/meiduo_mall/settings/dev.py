@@ -88,11 +88,11 @@ DATABASES = {
         'NAME': 'meiduo_24',
         'USER': 'meiduo',
         'PASSWORD': 'meiduo',
-        'HOST': '192.168.1.254',
+        'HOST': '10.254.254.3',
         'PORT': '3306',
-        'OPTIONS': {
-            "init_command": "SET sql_mode='STRICT_TRANS_TABLES'",
-        }
+        # 'OPTIONS': {
+        #     "init_command": "SET sql_mode='STRICT_TRANS_TABLES'",
+        # }
     }
 }
 
@@ -136,21 +136,21 @@ STATIC_URL = '/static/'
 CACHES = {
     "default": {  # 缓存省市区数据
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://192.168.1.254:6379/0",
+        "LOCATION": "redis://10.254.254.3:6379/0",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
     },
     "session": {  # 缓存session
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://192.168.1.254:6379/1",
+        "LOCATION": "redis://10.254.254.3:6379/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
     },
     "verify_codes": {  # 存储验证码
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://192.168.1.254:6379/2",
+        "LOCATION": "redis://10.254.254.3:6379/2",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
@@ -221,7 +221,7 @@ AUTH_USER_MODEL = 'users.User'
 AUTHENTICATION_BACKENDS = ['users.utils.UsernameMobileAuthBackend']
 
 # 前端域名
-FRONT_END = '192.168.1.254:8080'
+FRONT_END = '10.254.254.3:8080'
 
 # CORS追加白名单
 CORS_ORIGIN_WHITELIST = (
