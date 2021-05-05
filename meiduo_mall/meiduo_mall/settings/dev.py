@@ -137,21 +137,21 @@ STATIC_URL = '/static/'
 CACHES = {
     "default": {  # 缓存省市区数据
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://10.254.254.3:6379/0",
+        "LOCATION": "redis://127.0.0.1:6379/0",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
     },
     "session": {  # 缓存session
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://10.254.254.3:6379/1",
+        "LOCATION": "redis://127.0.0.1:6379/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
     },
     "verify_codes": {  # 存储验证码
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://10.254.254.3:6379/2",
+        "LOCATION": "redis://127.0.0.1:6379/2",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
@@ -215,6 +215,14 @@ REST_FRAMEWORK = {
     ),
 }
 
+# DRF扩展配置省市区数据缓存
+REST_FRAMEWORK_EXTENSIONS = {
+    # 缓存时间
+    'DEFAULT_CACHE_RESPONSE_TIMEOUT': 60 * 60,
+    # 缓存存储
+    'DEFAULT_USE_CACHE': 'default',
+}
+
 # 修改Django认证系统的模型类，只能写'应用.模型名'
 AUTH_USER_MODEL = 'users.User'
 
@@ -222,7 +230,7 @@ AUTH_USER_MODEL = 'users.User'
 AUTHENTICATION_BACKENDS = ['users.utils.UsernameMobileAuthBackend']
 
 # 前端域名
-FRONT_END = '10.254.254.3:8080'
+FRONT_END = '127.0.0.1:8080'
 
 # CORS追加白名单
 CORS_ORIGIN_WHITELIST = (
@@ -239,7 +247,7 @@ JWT_AUTH = {
 # 第三方登录配置
 QQ_CLIENT_ID = '101514053'
 QQ_CLIENT_SECRET = '1075e75648566262ea35afa688073012'
-QQ_REDIRECT_URI = 'http://192.168.1.254:8080/oauth_callback.html'
+QQ_REDIRECT_URI = 'http://127.0.0.1:8080/oauth_callback.html'
 
 # SMTP配置
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

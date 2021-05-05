@@ -6,6 +6,7 @@ from .serializers import AreaSerializer, SubsSerializer
 from rest_framework import status
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework  .viewsets import ReadOnlyModelViewSet
+from rest_framework_extensions.cache.mixins import CacheResponseMixin
 
 
 # # Create your views here.
@@ -46,7 +47,11 @@ from rest_framework  .viewsets import ReadOnlyModelViewSet
 #     queryset = Area.objects.all()
 
 
-class AreaViewSet(ReadOnlyModelViewSet):
+class AreaViewSet(CacheResponseMixin, ReadOnlyModelViewSet):
+    """
+    注意继承顺序，CacheResponseMixin做了一层封装，实际使用了装饰器cache_response，
+    然后调用父类ReadOnlyModelViewSet的list和retrieve方法
+    """
     # 指定查询集
     def get_queryset(self):
         if self.action == 'list':

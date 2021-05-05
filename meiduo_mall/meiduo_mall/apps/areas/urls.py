@@ -11,6 +11,6 @@ urlpatterns = [
 ]
 
 router = DefaultRouter()
-# 这里必须给base_name，因为视图中没有定义queryset,若已定义，自动为queryset中模型名的小写
+# 这里必须给base_name，用作路由别名前缀。因为视图中没有定义queryset,若已定义，自动为queryset中模型名的小写
 router.register(r'areas', views.AreaViewSet, base_name='area')
 urlpatterns += router.urls

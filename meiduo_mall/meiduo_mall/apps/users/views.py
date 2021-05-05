@@ -1,12 +1,17 @@
 from django.shortcuts import render
+from rest_framework.decorators import action
 from rest_framework.generics import CreateAPIView, RetrieveAPIView, UpdateAPIView
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
+from rest_framework.viewsets import GenericViewSet
+from rest_framework.mixins import UpdateModelMixin
 
-from .serializers import CreateUserSerializer, UserDetailSerializer, EmailSerializer
-from .models import User
+from .serializers import CreateUserSerializer, UserDetailSerializer, EmailSerializer, UserAddressSerializer, \
+    AddressTitleSerializer
+from .models import User, Address
+from . import constants
 
 
 # Create your views here.
@@ -90,3 +95,78 @@ class EmailVerifyView(APIView):
         user.save()
         # 响应
         return Response({'message': 'ok'})
+
+
+class AddressViewSet(UpdateModelMixin, GenericViewSet):
+    """
+    用户收货地址增删改查
+    这里不继承ModelViewSet，是因为要自己实现create和list和delete
+    """
+    permission_classes = [IsAuthenticated]
+    serializer_class = UserAddressSerializer
+
+    def get_queryset(self):
+        return self.request.user.addresses.filter(is_deleted=False)
+
+    def create(self, request, *args, **kwargs):
+        user = request.user
+        # count = Address.objects.filter(user=user).count()
+        count = user.addresses.all().count()
+        # 用户收货地址有上限
+        if count >= constants.USER_ADDRESS_COUNTS_LIMIT:
+            return Response({'message': '收货地址已达上限'}, stauts=status.HTTP_400_BAD_REQUEST)
+        # 创建序列化器进行反序列化
+        serializer = self.get_serializer(data=request.data)
+        # 调用序列化器的is_valid方法
+        serializer.is_valid(raise_exception=True)
+        # 调用序列化器save
+        serializer.save()
+        # 响应
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        user = self.request.user
+        return Response({
+            'user_id': user.id,
+            'default_address_id': user.default_address_id,
+            'limit': constants.USER_ADDRESS_COUNTS_LIMIT,
+            'addresses': serializer.data,
+        })
+
+    def destroy(self, request, *args, **kwargs):
+        address = self.get_object()
+
+        # 进行逻辑删除
+        address.is_deleted = True
+        address.save()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    # PUT /addresses/pk/title/
+    # 视图集的as_view默认只帮我们实现了增删改查的路由，新增的方法需要加上装饰器
+    #  detail: 声明该action的路径是否与单一资源对应，及是否是xxx/<pk>/action方法名/
+    #         True 表示路径格式是xxx/<pk>/action方法名/
+    #         False 表示路径格式是xxx/action方法名/
+    @action(methods=['put'], detail=True)
+    def title(self, request, pk=None):
+        """修改地址标题"""
+        address = self.get_object()
+        serializer = AddressTitleSerializer(instance=address, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
+    # PUT /addresses/pk/status/
+    @action(methods=['put'], detail=True)
+    def status(self, request, pk=None):
+        """修改默认地址"""
+        address = self.get_object()
+        request.user.default_address = address
+        request.user.save()
+        return Response({'message': 'OK'}, status=status.HTTP_200_OK)
+
+
+
+
